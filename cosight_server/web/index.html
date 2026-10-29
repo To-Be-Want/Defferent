@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>星轨智学 · 个性化复习</title>
+    <link rel="icon" type="image/svg+xml" href="images/xinggui-logo.svg">
+
+    <script src="libs/d3.v7.min.js"></script>
+    <script src="libs/marked.min.js"></script>
+    <script src="libs/purify.min.js"></script>
+    <link rel="stylesheet" href="libs/katex/katex.min.css">
+    <script src="libs/katex/katex.min.js"></script>
+    <script src="js/math-markdown.js?v=20261025-math"></script>
+    <script src="js/auth.js?v=20261025-math"></script>
+    <link href="libs/fontawesome-6.7.2/css/all.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles/styles.css?v=20261028-material-parse">
+    <link rel="stylesheet" href="styles/md.css">
+    <link rel="stylesheet" href="styles/workspace-layout.css">
+    <link rel="stylesheet" href="styles/purple-theme.css?v=20261025-math">
+    
+    <!-- 页面刷新时清空localStorage -->
+    <script>
+        // 页面刷新时清空localStorage中的所有内容
+        // Account-scoped caches are cleared on logout/account change, not on refresh.
+    </script>
+<link rel="stylesheet" href="/cosight/styles/study-experience.css?v=20261029-2"><script defer src="/cosight/js/study-experience.js?v=20261029-2"></script></head>
+
+<body class="app-dashboard">
+    <aside class="app-sidebar" aria-label="学习导航">
+        <a class="sidebar-brand" href="/cosight/"><img class="sidebar-logo" src="images/xinggui-logo.svg" alt=""><span>星轨智学<small>你的专属学习空间</small></span></a>
+        <p class="sidebar-section-label">我的学习</p>
+        <nav class="sidebar-navigation">
+            <a class="sidebar-item is-active" href="/cosight/" aria-current="page"><i class="fas fa-table-cells-large" aria-hidden="true"></i><span>学习首页</span></a>
+            <button type="button" class="sidebar-item" data-open-control="open-today-plan"><i class="fas fa-list-check" aria-hidden="true"></i><span>今日计划</span></button>
+            <a class="sidebar-item" href="/cosight/plans.html"><i class="fas fa-calendar-week" aria-hidden="true"></i><span>计划总览</span></a>
+            <button type="button" class="sidebar-item" data-open-control="open-material-library"><i class="fas fa-folder-open" aria-hidden="true"></i><span>我的资料</span></button>
+            <a class="sidebar-item" href="/cosight/mistakes.html"><i class="fas fa-book-open" aria-hidden="true"></i><span>我的错题</span></a>
+            <button type="button" class="sidebar-item" data-open-control="open-study-schedule"><i class="fas fa-calendar-days" aria-hidden="true"></i><span>考试排期</span></button>
+            <button type="button" class="sidebar-item" data-open-control="conversation-history-btn"><i class="fas fa-clock-rotate-left" aria-hidden="true"></i><span>学习记录</span></button>
+        </nav>
+        <div class="sidebar-bottom"><div class="sidebar-note"><span class="note-symbol" aria-hidden="true">✦</span><strong>按自己的节奏进步</strong><p>把大目标，拆成今天<br>可以完成的一小步。</p></div><button type="button" class="sidebar-item" data-open-control="header-model-settings"><i class="fas fa-sliders" aria-hidden="true"></i><span>学习与隐私设置</span></button><span class="sidebar-footer">YOUR SPACE TO GROW</span></div>
+    </aside>
+    <div class="container">
+        <div class="header">
+            <h1><img class="brand-glyph" src="images/xinggui-logo.svg" alt=""> 星轨智学</h1>
+            <div class="header-actions">
+                <span id="account-name"></span>
+                <a class="notebook-header-link" href="/cosight/mistakes.html"><i class="fas fa-book-open"></i> 错题本</a>
+                <button type="button" class="btn-replay-history" id="account-logout" title="退出登录" aria-label="退出登录"><i class="fas fa-right-from-bracket"></i></button>
+                <button class="btn-replay-history" id="credibility-overview-btn" title="可信度总览">
+                    <i class="fas fa-list-check"></i>
+                </button>
+                <button class="btn-replay-history" id="new-session-btn" title="新会话（清空聊天与状态）">
+                    <i class="fas fa-rotate-right"></i>
+                </button>
+                <button class="btn-replay-history" id="conversation-history-btn" title="查看我的聊天历史" aria-label="聊天历史">
+                    <i class="fas fa-history"></i>
+                </button>
+                <button class="header-model-button" data-study-settings id="header-model-settings" title="学习与隐私设置">
+                    <i class="fas fa-shield-halved"></i><span id="cloud-model-status">在线答疑设置</span>
+                </button>
+                <button class="btn-replay-history" data-study-schedule title="考试日期与每日复习时间">
+                    <i class="fas fa-calendar-days"></i>
+                </button>
+            </div>
+            <!-- <p>DAG流程展示与进度跟踪</p> -->
+        </div>
+
+        <div class="initial-input-container">
+            <div class="welcome-context"><span>YOUR PERSONAL LEARNING SPACE</span><span class="home-context-badge">专注当下 · 从容备考</span></div>
+            <!-- 欢迎标语 -->
+            <div class="welcome-message">
+                <p class="welcome-title">你好，</p>
+                <p class="welcome-subtitle">今天准备复习什么？</p>
+            </div>
+            <section class="study-home-summary" aria-label="今日学习概览">
+                <button type="button" id="home-today"><strong id="home-task-count">今日任务</strong><span id="home-task-time">正在读取…</span></button>
+                <button type="button" id="home-exam"><strong>最近考试</strong><span id="home-next-exam">正在读取…</span></button>
+                <button type="button" id="home-materials"><strong>我的资料</strong><span id="home-material-count">正在读取…</span></button>
+            </section>
+
+            <div class="initial-input-field-container">
+                <!-- <textarea class="initial-textarea" placeholder="请输入你的任务..." id="initial-message-input" rows="3">请分析2025年江苏足球联赛中各个足球队的表现分析这些球队的强项弱项等，然后预测一下最终的比赛成绩，生成一个对应的报告</textarea> -->
+                <textarea class="initial-textarea" placeholder="请输入你的任务..." id="initial-message-input" rows="3"></textarea>
+                <button class="initial-send-button" id="initial-send-button">
+                    <i class="fas fa-paper-plane"></i>
+                </button>
+            </div>
+            <!-- 文件上传（初始欢迎页）：支持 📎 按钮选择 + 直接拖拽文件到此处 -->
+            <div class="initial-file-upload-row" id="initial-file-drop-zone">
+                <input type="file" id="initial-file-input" class="file-input" multiple style="display:none;">
+                <button type="button" class="file-upload-button" id="initial-file-upload-button" title="上传文件（课件/真题/复习资料）">
+                    <i class="fas fa-paperclip"></i> 上传文件
+                </button>
+                <select id="initial-material-subject" class="material-subject-select" title="资料科目（入资料库时分类用）">
+                    <option>自动分类</option><option>离散数学</option><option>高等数学</option>
+                    <option>线性代数</option><option>概率论</option><option>大学英语</option><option>程序设计</option><option>自定义科目</option>
+                </select>
+                <span class="drag-drop-hint"><i class="fas fa-cloud-arrow-down"></i> 或将文件拖拽到此处</span>
+                <button type="button" class="clear-files-button" id="initial-clear-files-button" style="display:none;" title="清空已上传文件">
+                    <i class="fas fa-trash"></i> 清空
+                </button>
+                <div class="uploaded-files-container" id="initial-uploaded-files-container" style="display:none;">
+                    <span class="uploaded-files-label">已上传：</span>
+                    <div class="uploaded-files-list" id="initial-uploaded-files-list"></div>
+                </div>
+                <span class="study-quick-actions">
+                    <button type="button" id="open-material-library"><i class="fas fa-folder-open"></i> 我的资料</button>
+                    <a class="notebook-quick-link" href="/cosight/mistakes.html"><i class="fas fa-book-open"></i> 错题本</a>
+                    <button type="button" id="open-today-plan"><i class="fas fa-bolt"></i> 今日复习计划</button>
+                    <a class="notebook-quick-link" href="/cosight/plans.html"><i class="fas fa-calendar-week"></i> 计划总览 / 添加事项</a>
+                    <button type="button" id="open-study-schedule" data-study-schedule><i class="fas fa-calendar-days"></i> 考试排期</button>
+                    <button type="button" id="open-study-settings" data-study-settings><i class="fas fa-shield-halved"></i> 学习设置</button>
+                </span>
+            </div>
+            <section class="study-focus-banner" aria-label="学习提示">
+                <div><span class="focus-eyebrow">A LITTLE PROGRESS, EVERY DAY</span><h2>把计划，变成今天的进步。</h2><p>让课件、真题和错题不再零散，<br>让每一次复习都有明确的方向。</p></div>
+                <svg class="study-focus-art" viewBox="0 0 260 160" aria-hidden="true" focusable="false"><circle cx="163" cy="77" r="66" fill="#cddfee"/><rect x="91" y="24" width="115" height="117" rx="13" fill="#7770be" transform="rotate(12 149 82)"/><rect x="68" y="20" width="116" height="121" rx="13" fill="#fff" transform="rotate(-9 126 80)"/><path d="M85 49h72M85 64h54M85 79h63" stroke="#dcd9ee" stroke-width="7" stroke-linecap="round"/><rect x="83" y="98" width="48" height="21" rx="7" fill="#eacbdc"/><circle cx="190" cy="116" r="31" fill="#57509d"/><path d="m177 116 9 9 17-19" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/><path d="m48 39 4 9 10 2-9 5-1 11-5-9-11-1 9-6z" fill="#fff"/><circle cx="216" cy="31" r="5" fill="#e6becf"/></svg>
+            </section>
+        </div>
+
+        <div class="middle-container">
+
+            <div class="left-container">
+                <div class="progress-overview">
+                    <div class="left-header" id="title-container" style="opacity: 0;">
+                        <h3 id="dynamic-title">我的学习任务</h3>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="stat-item" style="color: #4CAF50;">
+                            <div class="stat-number" id="completed-count">0</div>
+                            <div class="stat-label" data-i18n="completed">已完成</div>
+                            <div class="step-list" id="completed-steps"></div>
+                        </div>
+                        <div class="stat-item" style="color: #FF9800;">
+                            <div class="stat-number" id="in-progress-count">0</div>
+                            <div class="stat-label" data-i18n="in_progress">进行中</div>
+                            <div class="step-list" id="in-progress-steps"></div>
+                        </div>
+                        <div class="stat-item" style="color: #f44336;">
+                            <div class="stat-number" id="blocked-count">0</div>
+                            <div class="stat-label" data-i18n="blocked">阻塞</div>
+                            <div class="step-list" id="blocked-steps"></div>
+                        </div>
+                        <div class="stat-item" style="color: #9E9E9E;">
+                            <div class="stat-number" id="not-started-count">6</div>
+                            <div class="stat-label" data-i18n="not_started">未开始</div>
+                            <div class="step-list" id="not-started-steps"></div>
+                        </div>
+                    </div>
+                    <div class="progress-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="progress-fill"></div>
+                        </div>
+                        <div class="progress-percentage">
+                            总体进度: <span id="progress-percentage">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dag-container">
+                    <div class="controls" style="display: none;">
+                        <button class="btn" onclick="startSimulateWorkflow()">
+                            <i class="fas fa-play-circle"></i> <span class="btn-text">开始运行</span>
+                        </button>
+                        <!-- <button class="btn" onclick="resetProgress()">
+                            <i class="fas fa-undo"></i> <span class="btn-text">重置进度</span>
+                        </button>
+                        <button class="btn" onclick="simulateProgress()">
+                            <i class="fas fa-spinner"></i> <span class="btn-text">模拟进度</span>
+                        </button>
+                        <button class="btn" onclick="simulateStep0Workflow()">
+                            <i class="fa-solid fa-0"></i> <span class="btn-text">模拟STEP0</span>
+                        </button> -->
+                        <button class="btn" onclick="simulateStep5Workflow()">
+                            <i class="fa-solid fa-5"></i> <span class="btn-text">模拟STEP5</span>
+                        </button>
+                        <!-- <button class="btn" onclick="toggleRightContainer()">
+                            <i class="fas fa-columns"></i> <span class="btn-text">切换显示右侧内容</span>
+                        </button> -->
+                        <button class="btn" onclick="testCreateDag()">
+                            <i class="fas fa-flask"></i> <span class="btn-text">测试DAG创建</span>
+                        </button>
+                        <button class="btn" onclick="resetZoom()">
+                            <i class="fas fa-search-minus"></i> <span class="btn-text">重置缩放</span>
+                        </button>
+                        <button class="btn" onclick="fitToScreen()">
+                            <i class="fas fa-expand-arrows-alt"></i> <span class="btn-text">适应屏幕</span>
+                        </button>
+                        <button class="btn" onclick="testLayoutOptimization()">
+                            <i class="fas fa-sitemap"></i> <span class="btn-text">测试布局优化</span>
+                        </button>
+                    </div>
+
+                    <section class="dag-preview" id="dag-preview" data-empty="true" aria-label="任务流程辅助视图">
+                    <div class="dag-preview-header"><div><strong>任务流程</strong><span>辅助视图</span></div><button type="button" id="dag-preview-expand" aria-expanded="false">放大查看</button></div>
+                    <svg class="dag-svg" id="dag-svg" aria-label="任务流程图">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="8" markerHeight="8" refX="25" refY="0" orient="auto"
+                                viewBox="0 -5 10 10">
+                                <path d="M0,-5L10,0L0,5" fill="#FF9800" />
+                            </marker>
+                        </defs>
+                    </svg>
+                    <p id="dag-preview-empty" class="dag-preview-empty">当前没有流程图。<br>你可以在左侧继续学习和聊天。</p>
+
+                    <!-- DAG操作提示 -->
+                    <div class="dag-operation-tip" id="dag-operation-tip">
+                        <div class="tip-content">
+                            <i class="fas fa-mouse-pointer"></i>
+                            <span>滚轮缩放</span>
+                        </div>
+                        <div class="tip-content">
+                            <i class="fas fa-mouse"></i>
+                            <span>按住鼠标拖动</span>
+                        </div>
+                    </div>
+                    </section>
+
+                    <!-- 快通道聊天面板：浮在 DAG 上层，可收起/展开（阶段4 新增）-->
+                    <div class="chat-panel collapsed" id="chat-panel" data-layout="docked">
+                        <div class="chat-panel-header">
+                            <span class="chat-panel-title"><i class="fas fa-comments"></i> 复习助教 <small id="study-engine-label" aria-live="polite"></small></span>
+                            <button class="chat-collapse-btn" onclick="toggleChatPanel()" title="收起聊天">
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                        </div>
+                        <div class="chat-panel-body" id="chat-messages"></div>
+                    </div>
+
+                    <!-- 收起后的小圆钮：点一下重新展开聊天 -->
+                    <button class="chat-reopen-btn" id="chat-reopen-btn" onclick="toggleChatPanel()" title="展开聊天">
+                        <i class="fas fa-comments"></i>
+                    </button>
+
+                    <div class="input">
+                        <div class="input-container">
+                            <input type="text" class="input-field" placeholder="请输入你的任务..." id="message-input">
+                            <button class="send-button" id="send-button">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                            <!-- 回放按钮已隐藏 -->
+                            <!-- <button class="send-button" id="replay-button" title="回放上次会话">
+                                <i class="fas fa-rotate-left"></i>
+                            </button> -->
+                        </div>
+                        <!-- 文件上传（聊天输入区）：支持 📎 按钮选择 + 直接拖拽文件到此处 -->
+                        <div class="file-upload-row" id="file-drop-zone">
+                            <input type="file" id="file-input" class="file-input" multiple style="display:none;">
+                            <button type="button" class="file-upload-button" id="file-upload-button" title="上传文件（课件/真题/复习资料）">
+                                <i class="fas fa-paperclip"></i> 上传文件
+                            </button>
+                            <select id="material-subject" class="material-subject-select compact" title="资料科目（入资料库时分类用）">
+                                <option>自动分类</option><option>离散数学</option><option>高等数学</option>
+                                <option>线性代数</option><option>概率论</option><option>大学英语</option><option>程序设计</option><option>自定义科目</option>
+                            </select>
+                            <span class="drag-drop-hint"><i class="fas fa-cloud-arrow-down"></i> 或将文件拖拽到此处</span>
+                            <button type="button" class="clear-files-button" id="clear-files-button" style="display:none;" title="清空已上传文件">
+                                <i class="fas fa-trash"></i> 清空
+                            </button>
+                            <div class="uploaded-files-container" id="uploaded-files-container" style="display:none;">
+                                <span class="uploaded-files-label">已上传：</span>
+                                <div class="uploaded-files-list" id="uploaded-files-list"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="step-details" id="step-details" style="display: none;">
+                        <h3 id="step-title">选择节点查看详情</h3>
+                        <p id="step-description">点击上方的节点来查看该步骤的详细信息。</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-container" id="right-container">
+                <div class="right-header">
+                    <h3><i class="fas fa-info-circle"></i> 学习工作区</h3>
+                    <span id="right-container-status">正在查看文件内容...</span>
+                    <div class="right-header-icons">
+                        <button class="btn-icon" id="toggle-maximize-btn" onclick="toggleMaximizePanel()">
+                            <i class="fas fa-expand-alt"></i>
+                        </button>
+                        <button class="btn-icon" id="close-right-panel-btn" onclick="toggleRightContainer()">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="right-content">
+                    <!-- <iframe id="content-iframe" src="https://www.logonews.cn/2025-jiangsu-football-city-league-logo.html" width="100%"
+                        height="100%" frameborder="0"></iframe> -->
+                    <iframe id="content-iframe" sandbox="" referrerpolicy="no-referrer" width="100%" height="100%" frameborder="0" style="display: none;"></iframe>
+                    <div id="markdown-content"></div>
+                    <!-- 加载中提示 -->
+                    <div id="loading-indicator" class="loading-indicator" style="display: none;">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 工具调用面板容器 -->
+        <div id="tool-call-panels-container">
+            <!-- 工具调用面板将动态创建并添加到这里 -->
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+    <div class="steps-tooltip" id="steps-tooltip"></div>
+    <div class="verification-tooltip" id="verification-tooltip"></div>
+
+    <!-- 学习资料库/今日计划 弹窗（队友功能） -->
+    <div class="study-quick-panel" id="study-quick-panel" aria-hidden="true">
+        <div class="study-quick-card">
+            <div class="study-quick-header">
+                <h2 id="study-quick-title">学习中心</h2>
+                <button type="button" id="close-study-quick" title="关闭"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="study-quick-content" class="study-quick-content"></div>
+        </div>
+    </div>
+
+    <!-- 国际化服务脚本 --><script src="js/i18n.js"></script><script src="data/data.js"></script>
+    <script src="js/websocket.js"></script>
+    <script src="js/message.js?v=20261028-experience"></script>
+    <script src="js/steps.js"></script>
+    <script src="js/dag.js?v=20261028-experience"></script>
+    <script src="js/credibility.js?v=20261022-score-color"></script>
+    <script src="js/exam-schedule.js?v=20261025-exams-2"></script>
+    <script src="js/main.js?v=20261028-material-parse"></script>
+
+    <script src="js/init.js?v=20261022-new-session-credibility"></script>
+    <script src="js/home-dashboard.js?v=20261029-1"></script>
+    <script src="js/workspace-layout.js"></script>
+    <script src="js/dashboard-theme.js"></script>
+    <script src="js/replay-init.js"></script>
+    <script>
+        // 跳转到回放历史页面
+        function goToReplayHistory() {
+            const targetPage = window.location.pathname.includes('/cosight/') 
+                ? 'replay.html' 
+                : '/cosight/replay.html';
+            window.location.href = targetPage;
+        }
+    </script>
+    <script>
+        (function restoreFromStorage() {
+            try {
+                const raw = localStorage.getItem('cosight:lastManusStep');
+                const pendingRaw = localStorage.getItem('cosight:pendingRequests');
+                const pendings = pendingRaw ? JSON.parse(pendingRaw) : {};
+                const pendingTopics = Object.keys(pendings);
+
+                if (!raw && pendingTopics.length === 0) return;
+                const stored = raw ? JSON.parse(raw) : null;
+                const messageData = stored && stored.message;
+
+                // 先切换到主布局（隐藏初始输入区，显示中间容器），不发送新消息
+                if (typeof hideInitialInputAndShowMain === 'function') {
+                    hideInitialInputAndShowMain('');
+                }
+
+                // 等待布局切换动画完成后再恢复 DAG
+                setTimeout(() => {
+                    if (messageData && messageData.data) {
+                        const ok = createDag(messageData);
+                        if (ok && messageData.data.initData && messageData.data.initData.title) {
+                            updateDynamicTitle(messageData.data.initData.title);
+                        }
+                        if (typeof handleResize === 'function') {
+                            setTimeout(() => handleResize(), 50);
+                        }
+                    }
+                }, 400);
+
+                // 等待 WebSocket 连接成功后，恢复订阅；仅在 stillPending===true 时重发
+                const onWsConnected = () => {
+                    try {
+                        pendingTopics.forEach(topic => {
+                            const item = pendings[topic];
+                            if (!item) return;
+
+                            // 包装一次性监听器：首次收到消息后，清除 pending 状态
+                            const originalHandler = window.messageService && window.messageService.receiveMessage
+                                ? window.messageService.receiveMessage
+                                : () => {};
+                            let firstMessageHandled = false;
+                            const wrappedHandler = (evt) => {
+                                if (!firstMessageHandled) {
+                                    firstMessageHandled = true;
+                                    try {
+                                        const latestPendingsRaw = localStorage.getItem('cosight:pendingRequests');
+                                        const latestPendings = latestPendingsRaw ? JSON.parse(latestPendingsRaw) : {};
+                                        if (latestPendings[topic]) {
+                                            latestPendings[topic].stillPending = false;
+                                            localStorage.setItem('cosight:pendingRequests', JSON.stringify(latestPendings));
+                                        }
+                                    } catch (e) {
+                                        console.warn('清除pending失败:', e);
+                                    }
+                                }
+                                try { originalHandler(evt); } catch (e) { /* no-op */ }
+                            };
+
+                            // 只订阅一次（由 WebSocketService 内部去重订阅更佳）
+                            WebSocketService.subscribe(topic, wrappedHandler);
+
+                            // 仅当明确标记 stillPending===true 时才重发，避免刷新导致重复执行
+                            if (item && item.stillPending === true) {
+                                try {
+                                    WebSocketService.sendMessage(topic, JSON.stringify(item.message));
+                                } catch (e) {
+                                    console.warn('重发pending消息失败:', e);
+                                }
+                            }
+                        });
+                    } catch (e) {
+                        console.warn('恢复pending失败:', e);
+                    }
+                };
+                // 如果已经连接，直接执行；否则等待连接事件
+                if (WebSocketService && WebSocketService.isOpen) {
+                    onWsConnected();
+                } else if (WebSocketService && WebSocketService.websocketConnected) {
+                    WebSocketService.websocketConnected.addEventListener('connected', onWsConnected, { once: true });
+                }
+            } catch (e) {
+                console.warn('恢复本地状态失败:', e);
+            }
+        })();
+    </script>
+</body>
+
+</html>

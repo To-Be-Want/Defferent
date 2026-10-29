@@ -1,0 +1,27 @@
+:root{font-family:Inter,-apple-system,BlinkMacSystemFont,"Segoe UI","Microsoft YaHei",sans-serif;color:#252a3b;background:#fafaf8;font-synthesis:none}
+*{box-sizing:border-box}body{margin:0}button,input{font:inherit}button{cursor:pointer}button:disabled{cursor:wait;opacity:.6}[hidden]{display:none!important}a{color:inherit;text-decoration:none}
+.account-layout{min-height:100vh;display:grid;grid-template-columns:1.05fr 1fr}
+.account-intro{background:#f0f1eb;padding:46px clamp(36px,6vw,100px);display:flex;flex-direction:column;border-right:1px solid #e3e5dc}
+.brand{display:inline-flex;align-items:center;gap:10px;align-self:flex-start;font-size:22px;font-weight:700;letter-spacing:-.7px}
+.brand-mark{display:grid;place-items:center;background:#4d5c43;color:white;width:37px;height:37px;border-radius:11px;font-size:24px}
+.brand-cn{font-weight:400;color:#68725f;font-size:18px;letter-spacing:1px;margin-left:2px}
+.intro-content{margin:auto 0;padding:72px 0 48px;max-width:490px}.eyebrow{color:#718065;letter-spacing:2.5px;font-size:10px;font-weight:700}
+h1{font-size:clamp(30px,3vw,45px);font-weight:600;line-height:1.55;letter-spacing:-1.5px;margin:20px 0}
+.intro-description{color:#73796e;line-height:1.9;font-size:14px}
+.study-preview{margin-top:38px;padding:22px 24px;background:#fafbf7;border:1px solid #dee3d6;border-radius:14px;max-width:390px}
+.preview-top{display:flex;align-items:center;justify-content:space-between;font-size:12px;color:#4f5b44;padding-bottom:6px}.preview-label{font-size:10px;color:#858d7c}
+.preview-row{display:flex;align-items:center;gap:14px;padding-top:21px}.preview-number{font-size:11px;color:#879477;border:1px solid #e1e5da;width:28px;height:28px;border-radius:8px;display:grid;place-items:center}
+.preview-row strong{display:block;font-size:13px;font-weight:500}.preview-row small{display:block;font-size:10px;color:#8b9284;margin-top:4px}.preview-check{margin-left:auto;color:#839274;font-size:14px}.intro-footer{font-size:11px;color:#92998a;margin:0}
+.account-form-side{padding:48px 32px 24px;display:flex;flex-direction:column;align-items:center;justify-content:center}.account-card{width:min(370px,100%);margin:auto 0}
+.form-kicker{font-size:11px;color:#8b8d98;letter-spacing:1px}.form-heading h2{margin:12px 0 9px;font-size:28px;font-weight:600;letter-spacing:-.5px}.form-heading>p{font-size:13px;color:#8b8d98;margin:0;line-height:1.7}
+.account-tabs{display:flex;border-bottom:1px solid #e7e8e3;margin:28px 0 25px;gap:28px}.account-tabs button{border:0;border-bottom:2px solid transparent;background:transparent;padding:0 2px 12px;color:#9a9ba4;font-size:13px}.account-tabs button[aria-selected=true]{color:#4d5c43;border-bottom-color:#4d5c43;font-weight:600}
+label{display:block;font-size:12px;font-weight:500;color:#515462;margin:20px 0 9px}
+input{width:100%;border:1px solid #dddeda;border-radius:8px;background:#fff;padding:13px 14px;font-size:13px;line-height:1.4;color:#282d3b;transition:border-color .15s}input::placeholder{color:#b1b2b9}input:focus{border-color:#7b8b6c;outline:3px solid #e7ecdf}
+.password-label{display:flex;align-items:center;justify-content:space-between}.password-label .text-button{margin-top:10px;font-size:11px;color:#909389}.password-field{position:relative}.password-field input{padding-right:56px}.password-field>button{position:absolute;right:12px;top:50%;transform:translateY(-50%);border:0;background:transparent;color:#8b8d96;font-size:11px;padding:5px}
+.field-hint{font-size:11px;color:#8a8e84;line-height:1.6;margin:7px 0 0}.text-button{background:none;border:0;padding:2px;color:#566749;font-size:12px}.text-button:hover{text-decoration:underline}
+.primary-button{display:block;width:100%;background:#4d5c43;border:1px solid #4d5c43;border-radius:8px;padding:13px 16px;color:#fff;font-weight:500;font-size:13px;transition:background .15s}.primary-button:hover{background:#3f4c36}
+#account-error{color:#b53e3e;font-size:12px;line-height:1.6;min-height:19px;margin:10px 0}.switch-prompt{text-align:center;font-size:12px;color:#9a9ca4;margin:19px 0 26px}.switch-prompt .text-button{margin-left:6px}
+.account-privacy{display:flex;gap:10px;padding-top:21px;border-top:1px solid #e7e8e3}.privacy-icon{color:#81916f;margin-top:1px}.account-privacy p{font-size:10px;color:#999d93;line-height:1.85;margin:0}.help{font-size:10px;color:#a1a59b;line-height:1.7;margin:12px 0 0}.account-footer{font-size:10px;color:#b0b2a9;margin:35px 0 0}
+dialog{width:min(420px,calc(100vw - 32px));padding:28px;border:1px solid #dee3d6;border-radius:14px;color:#30352e}dialog::backdrop{background:rgba(24,32,20,.3)}dialog h3{margin:0 0 14px;font-size:18px}dialog p{font-size:13px;line-height:1.9;color:#747a6e}button:focus-visible,a:focus-visible{outline:3px solid #c2cdb6;outline-offset:3px}
+@media(max-width:800px){.account-layout{grid-template-columns:1fr}.account-intro{padding:24px 24px 20px;border-right:0;border-bottom:1px solid #e3e5dc}.brand{font-size:19px}.brand-mark{width:31px;height:31px;font-size:20px}.brand-cn{font-size:16px}.intro-content{padding:24px 0 0;max-width:none}.eyebrow{font-size:9px}h1{font-size:25px;line-height:1.6;margin:12px 0 8px}.intro-description{font-size:12px;margin-bottom:0}.study-preview,.intro-footer,.desktop-break{display:none}.account-form-side{padding:30px 24px 24px;justify-content:flex-start}.account-card{margin:0 auto}.form-heading h2{font-size:25px}.account-tabs{margin-top:22px}.account-footer{margin-top:26px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important}}

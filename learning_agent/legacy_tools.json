@@ -1,0 +1,294 @@
+[
+  {
+    "type": "function",
+    "function": {
+      "name": "parse_study_material",
+      "description": "解析当前用户上传的课件和可选往年卷，建立课程知识块",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "exam_date": {
+            "type": "string"
+          },
+          "courseware_path": {
+            "type": "string"
+          },
+          "paper_path": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "subject",
+          "exam_date",
+          "courseware_path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_today_tasks",
+      "description": "获取今日任务卡",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_study_overview",
+      "description": "查看学习总览",
+      "parameters": {
+        "type": "object",
+        "properties": {},
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "generate_study_plan",
+      "description": "生成或重排复习计划",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "daily_minutes": {
+            "type": "integer",
+            "description": "每天可用分钟数；不填则使用主页考试排期中的时间段总和"
+          },
+          "reason": {
+            "type": "string",
+            "description": "重排原因"
+          },
+          "subject": {
+            "type": "string",
+            "description": "科目名；明确要求全部科目时才留空"
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "generate_quiz",
+      "description": "为某知识块生成随堂小测",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "description": "知识块id"
+          },
+          "kind": {
+            "type": "string",
+            "description": "随堂/补测/抽查，默认随堂"
+          }
+        },
+        "required": [
+          "block_id"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "record_quiz_score",
+      "description": "手动记录小测得分率",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "block_id": {
+            "type": "integer"
+          },
+          "score_rate": {
+            "type": "number",
+            "description": "0~100"
+          }
+        },
+        "required": [
+          "block_id",
+          "score_rate"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "save_mistake",
+      "description": "保存错题到数据库",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "description": "关联的知识块ID，不确定填0"
+          },
+          "question": {
+            "type": "string",
+            "description": "题目的完整描述"
+          },
+          "user_answer": {
+            "type": "string",
+            "description": "用户给出的错误答案"
+          },
+          "correct_answer": {
+            "type": "string",
+            "description": "正确答案"
+          },
+          "explanation": {
+            "type": "string",
+            "description": "解题思路/解析"
+          }
+        },
+        "required": [
+          "question",
+          "correct_answer"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_mistakes",
+      "description": "查看已保存的所有错题",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "block_id": {
+            "type": "integer",
+            "description": "可选，只查看某个知识块的错题"
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "parse_exam_paper",
+      "description": "解析上传的真题PDF：抽题入库并统计知识点考频，供排期按考频优先安排真题练习",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "科目名，如 高等数学"
+          },
+          "paper_path": {
+            "type": "string",
+            "description": "真题文件名/路径"
+          },
+          "year": {
+            "type": "string",
+            "description": "年份，可选"
+          }
+        },
+        "required": [
+          "subject",
+          "paper_path"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "get_plan_by_subject",
+      "description": "按科目查看最新复习计划；传'全部'查看全部科目（期末冲刺：各科独立计划视图）",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "科目名或'全部'"
+          }
+        },
+        "required": [
+          "subject"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "generate_learning_path",
+      "description": "生成个性化学习路径（含资源引用与总时长），用于回答'怎么学/学习路径'",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "科目名或'全部'，默认全部"
+          }
+        },
+        "required": []
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "set_exam_date",
+      "description": "设置/更新某科目的考试日期（支持'9月1号'等中文日期）。学生告知考试日期时调用",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "科目名，如 高等数学"
+          },
+          "date_text": {
+            "type": "string",
+            "description": "日期原文，如 '9月1号' 或 '2026-09-01'"
+          }
+        },
+        "required": [
+          "subject",
+          "date_text"
+        ]
+      }
+    }
+  },
+  {
+    "type": "function",
+    "function": {
+      "name": "build_from_textbook",
+      "description": "没课件/真题时，联网搜索教材大纲，基于公共知识为科目建立知识块库（排期依据）",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string",
+            "description": "科目名，如 高等数学"
+          },
+          "textbook": {
+            "type": "string",
+            "description": "教材名（如 张宇18讲/同济高数），可选，留空自动搜公共大纲"
+          },
+          "exam_date": {
+            "type": "string",
+            "description": "考试日期，可选（已设置则忽略）"
+          }
+        },
+        "required": [
+          "subject"
+        ]
+      }
+    }
+  }
+]

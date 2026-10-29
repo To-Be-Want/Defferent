@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light"><title>登录 · 星轨智学</title><link rel="icon" type="image/svg+xml" href="images/xinggui-logo.svg">
+<link rel="stylesheet" href="styles/account.css"><link rel="stylesheet" href="styles/purple-theme.css"></head>
+<body><main class="account-layout">
+  <section class="account-intro" aria-label="星轨智学介绍">
+    <a class="brand" href="/cosight/" aria-label="星轨智学首页"><img class="brand-mark" src="images/xinggui-logo.svg" alt="">星轨智学</a>
+    <div class="intro-content">
+      <span class="eyebrow">YOUR PERSONAL STUDY SPACE</span>
+      <h1>把零散的资料，<br>变成有章法的复习。</h1>
+      <p class="intro-description">从课堂课件到期末真题，从一道错题到一份计划。<br class="desktop-break">让每一次学习，都有迹可循。</p>
+      <div class="study-preview" aria-hidden="true">
+        <div class="preview-top"><span>我的学习空间</span><span class="preview-label">按你的节奏</span></div>
+        <div class="preview-row"><span class="preview-number">01</span><div><strong>归拢资料</strong><small>课件 · 真题 · 知识点</small></div><span class="preview-check">✓</span></div>
+        <div class="preview-row"><span class="preview-number">02</span><div><strong>制定计划</strong><small>结合考试日期与可用时间</small></div><span class="preview-check">✓</span></div>
+        <div class="preview-row"><span class="preview-number">03</span><div><strong>练习与回顾</strong><small>跟进错题，积累学习记录</small></div><span class="preview-check">✓</span></div>
+      </div>
+    </div>
+    <p class="intro-footer">为大学生打造的个性化复习助手</p>
+  </section>
+  <section class="account-form-side" aria-label="账号入口">
+    <div class="account-card">
+      <div class="form-heading"><span class="form-kicker">开始你的学习旅程</span><h2 id="form-title">欢迎回来</h2><p id="form-description">登录账号，继续你的复习计划。</p></div>
+      <div class="account-tabs" role="tablist" aria-label="登录或注册">
+        <button type="button" id="login-tab" role="tab" aria-selected="true" aria-controls="account-form">登录</button>
+        <button type="button" id="register-tab" role="tab" aria-selected="false" aria-controls="account-form">注册账号</button>
+      </div>
+      <form id="account-form" aria-label="登录表单">
+        <label for="username">账号或邮箱</label><input id="username" name="username" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="请输入账号或邮箱" required minlength="3" maxlength="100" aria-describedby="username-hint">
+        <p id="username-hint" class="field-hint" hidden>3—100位，可使用英文字母、数字、点、下划线或邮箱格式。</p>
+        <div class="password-label"><label for="password">密码</label><button type="button" id="password-help" class="text-button">忘记密码？</button></div>
+        <div class="password-field"><input id="password" name="password" type="password" autocomplete="current-password" placeholder="请输入密码（至少10位）" required minlength="10" maxlength="128"><button type="button" id="toggle-password" aria-label="显示密码" aria-pressed="false">显示</button></div>
+        <div id="confirm-password-group" hidden><label for="confirm-password">确认密码</label><input id="confirm-password" name="confirm-password" type="password" autocomplete="new-password" placeholder="再次输入密码" minlength="10" maxlength="128" disabled></div>
+        <div id="invitation-label" hidden><label for="invitation">注册邀请码</label><input id="invitation" autocomplete="off" placeholder="请输入管理员提供的邀请码" maxlength="256" disabled></div>
+        <p id="account-error" role="alert" aria-live="polite"></p>
+        <button id="submit" class="primary-button" type="submit">登录</button>
+        <p class="switch-prompt"><span id="switch-prompt-text">还没有账号？</span><button id="switch-mode" type="button" class="text-button">立即注册</button></p>
+      </form>
+      <div class="account-privacy"><span class="privacy-icon" aria-hidden="true">◇</span><p>你的资料与学习记录按账号独立保存于部署服务器。联网搜索、向在线模型发送内容，均可在学习设置中单独控制。</p></div>
+      <p class="help" id="registration-notice" role="status">正在读取注册方式…</p>
+    </div>
+    <p class="account-footer">星轨智学 · 让复习更有方向</p>
+  </section>
+</main>
+<dialog id="password-help-dialog"><h3>找回密码</h3><p>当前版本由部署管理员协助重置密码，暂未接入邮件找回。请联系为你提供网站的老师或团队。</p><p>不要向任何人发送你的旧密码或API密钥。</p><button type="button" id="close-password-help" class="primary-button">我知道了</button></dialog>
+<script src="js/login.js"></script></body></html>

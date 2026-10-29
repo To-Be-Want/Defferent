@@ -1,0 +1,9 @@
+{
+  "version": "0.19.1",
+  "url": "https://registry.npmjs.org/katex/-/katex-0.19.1.tgz",
+  "integrity": "sha512-jG8uKntjSEcm2EpQOh0XturpPuuC9r3Sq5HLHdsFdWZT27E672SF19QEi+of0/YeOy15lDgRhKvr5614uRrEfA==",
+  "sha256": {
+    "katex.min.js": "fa140498b8cfc8302cbe5e7cb1bdbc1f952bc38b3fa258ede09e73edbf9a74bc",
+    "katex.min.css": "00e0b094171b07f58422075f469b4feac2b2f7bce1aeec943c08da4d697f4dcf"
+  }
+}

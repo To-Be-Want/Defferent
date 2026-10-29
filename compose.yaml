@@ -1,0 +1,18 @@
+services:
+  learning-agent:
+    build: .
+    restart: unless-stopped
+    init: true
+    env_file: .env
+    environment:
+      COSIGHT_HOST: 0.0.0.0
+      COSIGHT_DATA_DIR: /app/data
+    ports:
+      - "127.0.0.1:7790:7790"
+    volumes:
+      - ./data:/app/data
+    logging:
+      driver: json-file
+      options:
+        max-size: 10m
+        max-file: "3"
